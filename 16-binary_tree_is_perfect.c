@@ -14,42 +14,32 @@ size_t binary_tree_height(const binary_tree_t *tree)
 
 		right = binary_tree_height(tree->right);
 		left = binary_tree_height(tree->left);
-		return (1 + ((right >= left) ? right : left));
+		return (1 + ((left >= right) ? left : right));
 	}
 
 	return (0);
 }
 
 /**
- * binary_tree_balance - Measures the balance factor of a binary tree
- * @tree: Pointer to the root node of the tree to measure
+ * binary_tree_nodes - Counts nodes with at least 1 child in a binary tree
+ * @tree: Pointer to the root node of the tree to count nodes
  *
- * Return: Balance factor of the binary tree, or 0 if tree is NULL
+ * Return: nodes with at least 1 child in the tree, or 0 if tree is NULL;
  */
-int binary_tree_balance(const binary_tree_t *tree)
+size_t binary_tree_nodes(const binary_tree_t *tree)
 {
-	if (tree)
-		return (binary_tree_height(tree->left) - binary_tree_height(tree->right));
+	size_t left = 0, right = 0;
 
-	return (0);
-}
-
-/**
- * sub_tree_perfect - Checks if a subtree is perfect
- * @tree: Pointer to the root node of the subtree to check
- *
- * Return: 1 if the subtree is perfect, 0 otherwise
- */
-int sub_tree_perfect(const binary_tree_t *tree)
-{
-	if (tree && !tree->right & !tree->left)
-		return (1);
-
-	if (tree && tree->right && tree->left)
-		return (1 && sub_tree_perfect(tree->left)
-		&& sub_tree_perfect(tree->right));
-
-	return (0);
+	if (tree == NULL)
+		return (0);
+	
+	left += binary_tree_nodes(tree->left);
+	right += binary_tree_nodes(tree->right);
+	
+	if (tree->left != NULL && tree->right != NULL)
+		return (left + right + 1);
+	else
+		return (left + right + 1);
 }
 
 /**
@@ -60,13 +50,16 @@ int sub_tree_perfect(const binary_tree_t *tree)
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
-	if (tree)
-	{
-		if (binary_tree_height(tree) != 0)
-			return (0);
+	int firstValue = 0, secondValue = 0;
 
-		return (sub_tree_perfect(tree->left) && sub_tree_perfect(tree->right));
-	}
-
-	return (0);
+	if (tree == NULL)
+		return (0);
+	if (binary_tree_height(tree->left) == binary_tree_height(tree->right))
+		firstValue = 1;
+	if (binary_tree_nodes(tree->left) == binary_tree_nodes(tree->right))
+		secondValue = 1;
+	if (firstValue == 1 && secondValue == 1)
+		return (1);
+	else
+		return (0);
 }
